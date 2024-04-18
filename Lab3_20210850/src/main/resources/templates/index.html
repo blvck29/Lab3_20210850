@@ -20,15 +20,41 @@
         Sistema Farmacia
     </h1>
 
-    <table>
+    <table class="table">
 
         <thead>
             <tr>
-                <th></th>
-                <th></th>
-                <th></th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Direccion</th>
+                <th scope="col">Telefono</th>
+                <th scope="col">Acciones</th>
             </tr>
         </thead>
+
+        <tbody>
+
+        <tr th:each="sede : ${listaSedes}">
+            <td th:text="${sede.getNombre()}"></td>
+            <td th:text="${sede.getDireccion()}"></td>
+            <td th:text="${sede.getTelefono()}"></td>
+
+            <td>
+                <div>
+                    <form th:action="@{/mostrar_veterinarios}" method="post">
+                        <input type="hidden" name="idSede" th:value="${sede.getId()}">
+                        <button class="btn btn-success" type="submit" style="margin-bottom: 30px;">Mostrar Veterinarios</button>
+                    </form>
+
+                    <form th:action="@{/mostrar_mascotas}" method="post">
+                        <input type="hidden" name="idSede" th:value="${sede.getId()}">
+                        <button class="btn btn-success" type="submit">Mostrar Mascotas</button>
+                    </form>
+                </div>
+            </td>
+
+        </tr>
+
+        </tbody>
 
     </table>
 
