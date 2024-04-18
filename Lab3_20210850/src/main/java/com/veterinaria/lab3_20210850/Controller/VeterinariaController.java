@@ -42,6 +42,16 @@ public class VeterinariaController {
         return "index";
     }
 
+    @GetMapping("/veterinaria/veterinarios")
+    public String verVeterinariosTotal(){
+        return "veterinarios";
+    }
+
+    @GetMapping("/veterinaria/mascotas")
+    public String verMascotasTotal(){
+        return "mascotas";
+    }
+
     @PostMapping("/mostrar_veterinarios")
     public String consultarVeterinarios(@RequestParam(value = "idSede") String idSede){
 
