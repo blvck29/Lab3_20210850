@@ -17,8 +17,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.app.lab3_20210850.api.ApiClient;
 import com.app.lab3_20210850.api.ApiService;
 import com.app.lab3_20210850.model.RequestLogin;
+import com.app.lab3_20210850.model.ToDo;
+import com.app.lab3_20210850.model.ToDosResponse;
 import com.app.lab3_20210850.model.Usuario;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
 
     ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+    Usuario usuario;
+
+    Bundle datosUsuarioBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,20 +80,48 @@ public class MainActivity extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
 
-                    Usuario usuario = response.body();
+                    usuario = response.body();
                     Log.d("SUCCESFULL LOGIN", "Autenticado: " + usuario.getUsername());
 
-                    Bundle datosUsuarioBundle = new Bundle();
                     datosUsuarioBundle.putInt("idUser", usuario.getId());
                     datosUsuarioBundle.putString("firstName", usuario.getFirstName());
                     datosUsuarioBundle.putString("lastName", usuario.getLastName());
                     datosUsuarioBundle.putString("email", usuario.getEmail());
                     datosUsuarioBundle.putString("gender", usuario.getGender());
 
-                    Intent intent = new Intent(MainActivity.this, TimerActivity.class);
-                    intent.putExtras(datosUsuarioBundle);
-                    startActivity(intent);
-                    finish();
+
+                    apiService.getTodosByUserId(usuario.getId()).enqueue(new Callback<ToDosResponse>() {
+                        @Override
+                        public void onResponse(Call<ToDosResponse> call, Response<ToDosResponse> response) {
+
+                            if (response.isSuccessful()) {
+
+                                ToDosResponse toDosResponse = response.body();
+                                ArrayList<ToDo> toDos = toDosResponse.getTodos();
+                                datosUsuarioBundle.putBoolean("existToDos", true);
+                                datosUsuarioBundle.putSerializable("todosList", (Serializable) toDos);
+
+
+                                Log.d("TO DO", "EXISTEN TAREAS: " + toDos.get(1).getTodo());
+
+                                Intent intent = new Intent(MainActivity.this, TimerActivity.class);
+                                intent.putExtras(datosUsuarioBundle);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+                                datosUsuarioBundle.putBoolean("existToDos", false);
+
+                                Log.d("NO TO DO", "NO EXISTEN TAREAS");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ToDosResponse> call, Throwable t) {
+                            Log.e("ERROR", "Error de red: " + t.getMessage());
+                        }
+                    });
+
 
                 } else {
 
@@ -101,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("BAD LOGIN", "Error: " + t.getMessage());
             }
         });
+
     }
 
 }

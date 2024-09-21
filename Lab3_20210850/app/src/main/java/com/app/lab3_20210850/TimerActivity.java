@@ -24,8 +24,10 @@ import com.app.lab3_20210850.model.ToDosResponse;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -47,11 +49,31 @@ public class TimerActivity extends AppCompatActivity {
     CountDownTimer descansoCountDownTimer;
     long descansoTimer = TimeUnit.SECONDS.toMillis(3);
 
-    int userId;
+    private Bundle datosUsuarioLogeado;
+    private int userId;
+    private String nombre;
+    private String apellido;
+    private String correo;
+    private String genero;
 
-    boolean existToDos = false;
+    private boolean existToDos;
+    private List<ToDo> toDos;
 
-    ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+
+    public void initializeDataBundle() {
+        Intent intent = getIntent();
+        datosUsuarioLogeado = intent.getExtras();
+
+        userId = datosUsuarioLogeado.getInt("idUser", 0);
+        nombre = datosUsuarioLogeado.getString("firstName", "Username");
+        apellido = datosUsuarioLogeado.getString("lastName", "LastName");
+        correo = datosUsuarioLogeado.getString("email", "Email");
+        genero = datosUsuarioLogeado.getString("gender", "male");
+
+        existToDos = datosUsuarioLogeado.getBoolean("existToDos");
+        toDos = (List<ToDo>) datosUsuarioLogeado.getSerializable("todosList");
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,24 +86,18 @@ public class TimerActivity extends AppCompatActivity {
             return insets;
         });
 
-
-        Intent intent = getIntent();
-        Bundle datosUsuarioLogeado = intent.getExtras();
+        initializeDataBundle();
 
         if (datosUsuarioLogeado != null) {
 
-            userId = datosUsuarioLogeado.getInt("idUser", 0);
 
             TextView nombreUsuario = findViewById(R.id.nombre_usuario);
-            String nombre = datosUsuarioLogeado.getString("firstName", "Username") + ' ' + datosUsuarioLogeado.getString("lastName", "");
-            nombreUsuario.setText(nombre);
+            nombreUsuario.setText(nombre + ' ' + apellido);
 
             TextView correoUsuario = findViewById(R.id.correo_usuario);
-            String correo = datosUsuarioLogeado.getString("email", "Email");
             correoUsuario.setText(correo);
 
             ImageView generoUsuario = findViewById(R.id.genero_usuario);
-            String genero = datosUsuarioLogeado.getString("gender", "male");
 
             if (genero.equals("male")){
                 generoUsuario.setImageResource(R.drawable.baseline_man_24);
@@ -173,46 +189,24 @@ public class TimerActivity extends AppCompatActivity {
             public void onFinish() {
                 timerCountdown.setText("00:00");
 
-                apiService.getTodosByUserId(userId).enqueue(new Callback<ToDosResponse>() {
-                    @Override
-                    public void onResponse(Call<ToDosResponse> call, Response<ToDosResponse> response) {
+                Log.d("TO DO INFO TIMER", existToDos + " : " + toDos.size());
 
-                        if (response.isSuccessful()) {
 
-                            ToDosResponse toDosResponse = response.body();
-                            List<ToDo> toDos = toDosResponse.getTodos();
-                            existToDos = true;
+                if (existToDos) {
+                    Intent intent = new Intent(TimerActivity.this, ToDoActivity.class);
+                    intent.putExtras(datosUsuarioLogeado);
+                    startActivity(intent);
+                } else {
 
-                            Bundle datosToDoBundle = new Bundle();
-                            datosToDoBundle.putSerializable("todosList", (Serializable) toDos);
+                    estadoText.setText("Fin del descanso");
+                    controlButton.setClickable(true);
 
-                            Intent intent = new Intent(TimerActivity.this, ToDoActivity.class);
-                            intent.putExtras(datosToDoBundle);
-                            startActivity(intent);
-
-                        } else {
-
-                            existToDos = false;
-                            Log.e("BAD REQUEST", "Error");
-
-                            new MaterialAlertDialogBuilder(TimerActivity.this)
-                                    .setTitle("Atención")
-                                    .setMessage("Terminó el tiempo de descanso. Dale al botón de reinicio para comenzar otro ciclo.")
-                                    .setPositiveButton("Entendido", null)
-                                    .show();
-
-                            estadoText.setText("Fin del descanso");
-                            controlButton.setClickable(true);
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ToDosResponse> call, Throwable t) {
-                        Log.e("ERROR", "Error de red: " + t.getMessage());
-                    }
-                });
-
+                    new MaterialAlertDialogBuilder(TimerActivity.this)
+                            .setTitle("Atención")
+                            .setMessage("Terminó el tiempo de descanso. Dale al botón de reinicio para comenzar otro ciclo.")
+                            .setPositiveButton("Entendido", null)
+                            .show();
+                }
 
             }
         }.start();
@@ -227,7 +221,9 @@ public class TimerActivity extends AppCompatActivity {
             Log.d("EXIT", "Session cerrada.");
 
             Intent intent = new Intent(TimerActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish();
             return true;
         }
 
