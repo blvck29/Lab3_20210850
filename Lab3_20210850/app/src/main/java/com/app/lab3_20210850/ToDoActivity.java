@@ -42,6 +42,8 @@ public class ToDoActivity extends AppCompatActivity {
     private boolean existToDos;
     private List<ToDo> toDos;
 
+    List<String> todoStrings = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,6 @@ public class ToDoActivity extends AppCompatActivity {
 
         spinnerTodo = findViewById(R.id.spinner_todo);
 
-        List<String> todoStrings = new ArrayList<>();
         for (ToDo todo : toDos) {
             String status = todo.isCompleted() ? "Completado" : "No Completado";
             todoStrings.add(todo.getTodo() + " - " + status);
@@ -89,6 +90,7 @@ public class ToDoActivity extends AppCompatActivity {
             ToDo selectedTodo = toDos.get(position);
 
             selectedTodo.setCompleted(!selectedTodo.isCompleted());
+
 
             todoStrings.set(position, selectedTodo.getTodo() + " - " + (selectedTodo.isCompleted() ? "Completado" : "No Completado"));
             adapter.notifyDataSetChanged();

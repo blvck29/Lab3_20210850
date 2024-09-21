@@ -26,7 +26,8 @@
             android:name=".TimerActivity"
             android:exported="false"
             android:label="Pomodoro PUCP"
-            android:theme="@style/Base.Theme.Lab3_20210850" />
+            android:theme="@style/Base.Theme.Lab3_20210850"
+            android:configChanges="orientation|screenSize|smallestScreenSize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

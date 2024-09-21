@@ -44,10 +44,10 @@ public class TimerActivity extends AppCompatActivity {
     int timerOn = 1;
 
     CountDownTimer pomodoroCountDownTimer;
-    long pomodoroTimer = TimeUnit.SECONDS.toMillis(2);
+    long pomodoroTimer = TimeUnit.MINUTES.toMillis(25);
 
     CountDownTimer descansoCountDownTimer;
-    long descansoTimer = TimeUnit.SECONDS.toMillis(3);
+    long descansoTimer = TimeUnit.MINUTES.toMillis(5);
 
     private Bundle datosUsuarioLogeado;
     private int userId;
