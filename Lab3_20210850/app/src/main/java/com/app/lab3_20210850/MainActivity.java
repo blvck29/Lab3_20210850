@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button LoginButton;
+    Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        LoginButton = findViewById(R.id.login_button);
-        LoginButton.setOnClickListener(view -> handleLoginAPI());
+        loginButton = findViewById(R.id.login_button);
+        loginButton.setOnClickListener(view -> handleLoginAPI());
     }
 
 

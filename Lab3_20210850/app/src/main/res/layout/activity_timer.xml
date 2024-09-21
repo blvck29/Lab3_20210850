@@ -66,16 +66,18 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginTop="-40dp"
+                android:layout_marginTop="-50dp"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/estado_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
                     android:text="Descanso: 5:00" />
 
                 <TextView
+                    android:id="@+id/timer_countdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="25:00"
@@ -83,7 +85,7 @@
                     android:textAlignment="center" />
 
                 <ImageButton
-                    android:id="@+id/button2"
+                    android:id="@+id/control_timer_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

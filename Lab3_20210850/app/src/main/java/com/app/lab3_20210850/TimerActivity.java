@@ -1,10 +1,18 @@
 package com.app.lab3_20210850;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.MediaParser;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -13,7 +21,25 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 public class TimerActivity extends AppCompatActivity {
+
+    ImageButton controlButton;
+    TextView timerCountdown;
+
+    TextView estadoText;
+
+    int timerOn = 1;
+
+    CountDownTimer pomodoroCountDownTimer;
+    long pomodoroTimer = TimeUnit.SECONDS.toMillis(2);
+
+    CountDownTimer descansoCountDownTimer;
+    long descansoTimer = TimeUnit.SECONDS.toMillis(3);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +51,104 @@ public class TimerActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        timerCountdown = findViewById(R.id.timer_countdown);
+
+        estadoText = findViewById(R.id.estado_text);
+
+        controlButton = findViewById(R.id.control_timer_button);
+        controlButton.setOnClickListener(view -> handleControlButton());
+
     }
+
+    private void handleControlButton() {
+
+        if (timerOn == 1){
+            controlButton.setImageResource(R.drawable.baseline_restart_24);
+        } else if (timerOn == 0) {
+            controlButton.setImageResource(R.drawable.play_24);
+        }
+
+        startRestartPomodoro();
+    }
+
+    private void startRestartPomodoro(){
+
+        if (pomodoroCountDownTimer != null){
+            pomodoroCountDownTimer.cancel();
+        }
+
+        timerCountdown.setText("25:00");
+
+        pomodoroCountDownTimer = new CountDownTimer(pomodoroTimer, 1000) {
+            @Override
+            public void onTick(long milisegundosRestantes) {
+                int minutos = (int) ((milisegundosRestantes) / 1000 % 3600)/60;
+                int segundos = (int) ((milisegundosRestantes) / 1000 % 60);
+
+                String tiempoRestante = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
+                timerCountdown.setText(tiempoRestante);
+            }
+
+            @Override
+            public void onFinish() {
+                timerCountdown.setText("00:00");
+                new MaterialAlertDialogBuilder(TimerActivity.this)
+                        .setTitle("¡Felicidades!")
+                        .setMessage("Empezó el tiempo de descanso")
+                        .setPositiveButton("Entendido", null)
+                        .show();
+
+
+                startDescanso();
+            }
+        }.start();
+    }
+
+    private void startDescanso(){
+
+        if (pomodoroCountDownTimer != null){
+            pomodoroCountDownTimer.cancel();
+        }
+
+        estadoText.setText("En descanso");
+
+        timerCountdown.setText("5:00");
+        controlButton.setClickable(false);
+
+        descansoCountDownTimer = new CountDownTimer(descansoTimer, 1000) {
+            @Override
+            public void onTick(long milisegundosRestantes) {
+                int minutos = (int) ((milisegundosRestantes) / 1000 % 3600)/60;
+                int segundos = (int) ((milisegundosRestantes) / 1000 % 60);
+
+                String tiempoRestante = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
+                timerCountdown.setText(tiempoRestante);
+            }
+
+            @Override
+            public void onFinish() {
+                timerCountdown.setText("00:00");
+                new MaterialAlertDialogBuilder(TimerActivity.this)
+                        .setTitle("Atención")
+                        .setMessage("Terminó el tiempo de descanso. Dale al botón de reinicio para comenzar otro ciclo.")
+                        .setPositiveButton("Entendido", null)
+                        .show();
+
+                estadoText.setText("Fin del descanso");
+                controlButton.setClickable(true);
+            }
+        }.start();
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.exit_off){
             Log.d("EXIT", "Session cerrada.");
-
 
             Intent intent = new Intent(TimerActivity.this, MainActivity.class);
             startActivity(intent);
