@@ -48,6 +48,8 @@ public class TimerActivity extends AppCompatActivity {
 
     int userId;
 
+    boolean existToDos = false;
+
     ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
     @Override
@@ -169,21 +171,25 @@ public class TimerActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timerCountdown.setText("00:00");
-                Log.d("UserID", "ID que se envía a la API: " + userId);
 
                 apiService.getTodosByUserId(userId).enqueue(new Callback<ToDosResponse>() {
                     @Override
                     public void onResponse(Call<ToDosResponse> call, Response<ToDosResponse> response) {
+
                         if (response.isSuccessful()) {
+
                             ToDosResponse toDos = response.body();
+                            existToDos = true;
                         } else {
+
+                            existToDos = false;
                             Log.e("BAD REQUEST", "Error");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ToDosResponse> call, Throwable t) {
-                        Log.e("Error", "Error de red: " + t.getMessage());
+                        Log.e("ERROR", "Error de red: " + t.getMessage());
                     }
                 });
 
