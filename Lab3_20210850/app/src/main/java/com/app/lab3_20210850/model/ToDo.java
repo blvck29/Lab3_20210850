@@ -1,6 +1,8 @@
 package com.app.lab3_20210850.model;
 
-public class ToDo {
+import java.io.Serializable;
+
+public class ToDo implements Serializable {
 
     private int id;
     private String todo;

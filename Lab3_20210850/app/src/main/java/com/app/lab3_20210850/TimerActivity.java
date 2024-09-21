@@ -23,6 +23,7 @@ import com.app.lab3_20210850.model.ToDo;
 import com.app.lab3_20210850.model.ToDosResponse;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -178,12 +179,31 @@ public class TimerActivity extends AppCompatActivity {
 
                         if (response.isSuccessful()) {
 
-                            ToDosResponse toDos = response.body();
+                            ToDosResponse toDosResponse = response.body();
+                            List<ToDo> toDos = toDosResponse.getTodos();
                             existToDos = true;
+
+                            Bundle datosToDoBundle = new Bundle();
+                            datosToDoBundle.putSerializable("todosList", (Serializable) toDos);
+
+                            Intent intent = new Intent(TimerActivity.this, ToDoActivity.class);
+                            intent.putExtras(datosToDoBundle);
+                            startActivity(intent);
+
                         } else {
 
                             existToDos = false;
                             Log.e("BAD REQUEST", "Error");
+
+                            new MaterialAlertDialogBuilder(TimerActivity.this)
+                                    .setTitle("Atención")
+                                    .setMessage("Terminó el tiempo de descanso. Dale al botón de reinicio para comenzar otro ciclo.")
+                                    .setPositiveButton("Entendido", null)
+                                    .show();
+
+                            estadoText.setText("Fin del descanso");
+                            controlButton.setClickable(true);
+
                         }
                     }
 
@@ -194,14 +214,6 @@ public class TimerActivity extends AppCompatActivity {
                 });
 
 
-                new MaterialAlertDialogBuilder(TimerActivity.this)
-                        .setTitle("Atención")
-                        .setMessage("Terminó el tiempo de descanso. Dale al botón de reinicio para comenzar otro ciclo.")
-                        .setPositiveButton("Entendido", null)
-                        .show();
-
-                estadoText.setText("Fin del descanso");
-                controlButton.setClickable(true);
             }
         }.start();
 
