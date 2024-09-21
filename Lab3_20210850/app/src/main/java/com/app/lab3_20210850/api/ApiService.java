@@ -2,6 +2,7 @@ package com.app.lab3_20210850.api;
 
 import com.app.lab3_20210850.model.RequestLogin;
 import com.app.lab3_20210850.model.ToDo;
+import com.app.lab3_20210850.model.ToDosResponse;
 import com.app.lab3_20210850.model.Usuario;
 
 import java.util.List;
@@ -18,5 +19,5 @@ public interface ApiService {
     Call<Usuario> login(@Body RequestLogin loginRequest);
 
     @GET("todos/user/{userId}")
-    Call<List<ToDo>> getTodosByUserId(@Path("userId") int userId);
+    Call<ToDosResponse> getTodosByUserId(@Path("userId") int userId);
 }

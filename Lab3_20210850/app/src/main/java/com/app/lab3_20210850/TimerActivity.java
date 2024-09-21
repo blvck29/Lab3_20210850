@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.app.lab3_20210850.api.ApiClient;
 import com.app.lab3_20210850.api.ApiService;
 import com.app.lab3_20210850.model.ToDo;
+import com.app.lab3_20210850.model.ToDosResponse;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
@@ -170,22 +171,18 @@ public class TimerActivity extends AppCompatActivity {
                 timerCountdown.setText("00:00");
                 Log.d("UserID", "ID que se envía a la API: " + userId);
 
-                apiService.getTodosByUserId(userId).enqueue(new Callback<List<ToDo>>() {
+                apiService.getTodosByUserId(userId).enqueue(new Callback<ToDosResponse>() {
                     @Override
-                    public void onResponse(Call<List<ToDo>> call, Response<List<ToDo>> response) {
+                    public void onResponse(Call<ToDosResponse> call, Response<ToDosResponse> response) {
                         if (response.isSuccessful()) {
-                            List<ToDo> toDos = response.body();
-                            Log.e("LIST", toDos.toString());
-
+                            ToDosResponse toDos = response.body();
                         } else {
-
                             Log.e("BAD REQUEST", "Error");
-
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<List<ToDo>> call, Throwable t) {
+                    public void onFailure(Call<ToDosResponse> call, Throwable t) {
                         Log.e("Error", "Error de red: " + t.getMessage());
                     }
                 });
