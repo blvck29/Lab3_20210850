@@ -25,7 +25,7 @@
             android:gravity="center_vertical">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/genero_usuario"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="16dp"
@@ -37,6 +37,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/nombre_usuario"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Usuario Logueado"
@@ -44,6 +45,7 @@
                     android:layout_marginBottom="4dp" />
 
                 <TextView
+                    android:id="@+id/correo_usuario"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="correo@ejemplo.com"

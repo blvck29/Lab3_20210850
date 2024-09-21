@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     EditText passwordInput;
 
     Button loginButton;
+
+    ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +63,26 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
         RequestLogin loginRequest = new RequestLogin(username, password);
 
         apiService.login(loginRequest).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+
                 if (response.isSuccessful() && response.body() != null) {
-                    Usuario user = response.body();
-                    Log.d("User", "Authenticated: " + user.getUsername());
+
+                    Usuario usuario = response.body();
+                    Log.d("SUCCESFULL LOGIN", "Autenticado: " + usuario.getUsername());
+
+                    Bundle datosUsuarioBundle = new Bundle();
+                    datosUsuarioBundle.putInt("idUser", usuario.getId());
+                    datosUsuarioBundle.putString("firstName", usuario.getFirstName());
+                    datosUsuarioBundle.putString("lastName", usuario.getLastName());
+                    datosUsuarioBundle.putString("email", usuario.getEmail());
+                    datosUsuarioBundle.putString("gender", usuario.getGender());
 
                     Intent intent = new Intent(MainActivity.this, TimerActivity.class);
+                    intent.putExtras(datosUsuarioBundle);
                     startActivity(intent);
                     finish();
 
@@ -81,13 +93,12 @@ public class MainActivity extends AppCompatActivity {
                             .setMessage("El usuario o contraseña ingresada son incorrectas.")
                             .setPositiveButton("Entendido", null)
                             .show();
-                    return;
                 }
             }
 
             @Override
             public void onFailure(Call<Usuario> call, Throwable t) {
-                Log.e("Error", "Network error: " + t.getMessage());
+                Log.e("BAD LOGIN", "Error: " + t.getMessage());
             }
         });
     }
