@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ToDoActivity"
+            android:name=".ToDoListActivity"
             android:exported="false"
             android:label="Pomodoro PUCP"
             android:theme="@style/Base.Theme.Lab3_20210850"

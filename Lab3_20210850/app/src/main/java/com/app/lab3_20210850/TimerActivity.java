@@ -17,22 +17,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.app.lab3_20210850.api.ApiClient;
-import com.app.lab3_20210850.api.ApiService;
 import com.app.lab3_20210850.model.ToDo;
-import com.app.lab3_20210850.model.ToDosResponse;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class TimerActivity extends AppCompatActivity {
 
@@ -204,7 +194,7 @@ public class TimerActivity extends AppCompatActivity {
 
                     controlButton.setClickable(true);
 
-                    Intent intent = new Intent(TimerActivity.this, ToDoActivity.class);
+                    Intent intent = new Intent(TimerActivity.this, ToDoListActivity.class);
                     intent.putExtras(datosUsuarioLogeado);
                     intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);

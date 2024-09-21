@@ -13,7 +13,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -26,7 +25,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoActivity extends AppCompatActivity {
+public class ToDoListActivity extends AppCompatActivity {
 
     TextView toDoNombre;
     Spinner spinnerTodo;
@@ -48,7 +47,7 @@ public class ToDoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_to_do);
+        setContentView(R.layout.activity_to_do_list);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -95,7 +94,7 @@ public class ToDoActivity extends AppCompatActivity {
             todoStrings.set(position, selectedTodo.getTodo() + " - " + (selectedTodo.isCompleted() ? "Completado" : "No Completado"));
             adapter.notifyDataSetChanged();
 
-            new MaterialAlertDialogBuilder(ToDoActivity.this)
+            new MaterialAlertDialogBuilder(ToDoListActivity.this)
                     .setTitle("Cambio Exitoso")
                     .setMessage("Se cambió el estado de la tarea")
                     .setPositiveButton("Entendido", null)
@@ -125,12 +124,12 @@ public class ToDoActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.exit_off) {
             Log.d("EXIT", "Session cerrada.");
 
-            Intent intent = new Intent(ToDoActivity.this, MainActivity.class);
+            Intent intent = new Intent(ToDoListActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         } else {
-            Intent intent = new Intent(ToDoActivity.this, TimerActivity.class);
+            Intent intent = new Intent(ToDoListActivity.this, TimerActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         }
