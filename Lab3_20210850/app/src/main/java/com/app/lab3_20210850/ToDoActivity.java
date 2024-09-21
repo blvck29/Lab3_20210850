@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -34,6 +35,10 @@ public class ToDoActivity extends AppCompatActivity {
     private Bundle datosUsuarioLogeado;
     private int userId;
     private String nombre;
+    private String apellido;
+    private String correo;
+    private String genero;
+
     private boolean existToDos;
     private List<ToDo> toDos;
 
@@ -98,35 +103,35 @@ public class ToDoActivity extends AppCompatActivity {
 
     }
 
-
     public void initializeDataBundle() {
         Intent intent = getIntent();
         datosUsuarioLogeado = intent.getExtras();
 
         userId = datosUsuarioLogeado.getInt("idUser", 0);
         nombre = datosUsuarioLogeado.getString("firstName", "Username");
+        apellido = datosUsuarioLogeado.getString("lastName", "LastName");
+        correo = datosUsuarioLogeado.getString("email", "Email");
+        genero = datosUsuarioLogeado.getString("gender", "male");
 
         existToDos = datosUsuarioLogeado.getBoolean("existToDos");
         toDos = (List<ToDo>) datosUsuarioLogeado.getSerializable("todosList");
 
     }
 
-
-
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        if (item.getItemId() == R.id.exit_off){
+        if (item.getItemId() == R.id.exit_off) {
             Log.d("EXIT", "Session cerrada.");
 
             Intent intent = new Intent(ToDoActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-            return true;
+        } else {
+            Intent intent = new Intent(ToDoActivity.this, TimerActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 

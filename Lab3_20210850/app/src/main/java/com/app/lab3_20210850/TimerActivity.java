@@ -86,7 +86,15 @@ public class TimerActivity extends AppCompatActivity {
             return insets;
         });
 
-        initializeDataBundle();
+
+        Intent intent = getIntent();
+        datosUsuarioLogeado = intent.getExtras();
+
+        if (datosUsuarioLogeado != null) {
+            initializeDataBundle();
+        } else {
+            Log.e("BUNDLE INFOOO", "El Bundle es null");
+        }
 
         if (datosUsuarioLogeado != null) {
 
@@ -193,9 +201,14 @@ public class TimerActivity extends AppCompatActivity {
 
 
                 if (existToDos) {
+
+                    controlButton.setClickable(true);
+
                     Intent intent = new Intent(TimerActivity.this, ToDoActivity.class);
                     intent.putExtras(datosUsuarioLogeado);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
+
                 } else {
 
                     estadoText.setText("Fin del descanso");
@@ -210,6 +223,8 @@ public class TimerActivity extends AppCompatActivity {
 
             }
         }.start();
+
+
 
     }
 
